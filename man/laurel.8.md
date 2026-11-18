@@ -190,7 +190,11 @@ Options that can be configured here actually add information to events
   This setting does not affect enriched fields passed in from
   `auditd(8)`. Default: unset
 - `exe-hash`: Compute SHA256 hash of the executable (`SYSCALL.exe`)
-  and add it as `EXE_HASH` to the SYSCALL record. Default: false
+  and add it as `EXE_HASH` to the SYSCALL record. If `/proc/PID/exe`
+  is unavailable, try the executable path through `/proc/PPID/root`,
+  accepting it only if its device and inode match one of the event's
+  PATH records. This fallback assumes the parent has the same filesystem
+  view; unavailable or nonmatching files are not hashed. Default: false
 - `exe-hash-size-limit`: Skip hashing executables larger than this size
   (in bytes). Recommended to avoid excessive I/O on large binaries.
   Default: 10_000_000
